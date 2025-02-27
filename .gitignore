@@ -2,7 +2,8 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
+.idea/
+Multi-client-chat.iml
 
 ### Eclipse ###
 .apt_generated
