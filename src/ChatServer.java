@@ -63,6 +63,24 @@ public class ChatServer {
         }
     }
 
+    public synchronized boolean sendPrivateMessage(ClientHandler sender, String receiver_username, String private_message) {
+        boolean is_receiver_found = false;
+        String sender_username = sender.getClientUsername();
+
+        for (ClientHandler receiver : clients) {
+            if (receiver != null && receiver.getClientUsername().equalsIgnoreCase(receiver_username)) {
+                receiver.sendMessage("[PM from " + sender_username + "] " + private_message);
+                sender.sendMessage("[PM to " + receiver_username + "] " + private_message);
+                is_receiver_found = true;
+                log.println("[PRIVATE] " + sender_username + " to " + receiver_username + ": " + private_message);
+                break;
+            }
+        }
+
+
+        return is_receiver_found;
+    }
+
     public synchronized void removeClient(ClientHandler client) {
         if (clients.contains(client)) {
             broadcastMessage(client.getClientUsername() + " has left the chat.", null);

@@ -1,8 +1,6 @@
 import java.io.*;
 import java.net.Socket;
 
-import static java.lang.System.exit;
-
 
 public class ClientHandler implements Runnable {
 
@@ -23,7 +21,6 @@ public class ClientHandler implements Runnable {
             this.output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
             client_username = input.readLine();
 
-            // validate name
             if (client_username == null || client_username.trim().isEmpty()) {
                 client_username = "Anonymous - " + String.valueOf(anonymous_id);
                 anonymous_id++;
@@ -74,9 +71,45 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    private void handlePrivateMessage(String message) {
+        try {
+            String trimmed_message = message.substring(5).trim();
+
+            if (!trimmed_message.startsWith("\"")) {
+                sendMessage("[SERVER] Invalid private message format. Use /msg <username> <message>.");
+                return;
+            }
+
+            int user_name_end_index = trimmed_message.indexOf("\"", 1);
+            if (user_name_end_index == -1) {
+                sendMessage("[SERVER] Invalid private message format. Use /msg \"username\" <message>.");
+                return;
+            }
+
+            String receiver_username = trimmed_message.substring(1, user_name_end_index);
+            String private_message = trimmed_message.substring(user_name_end_index + 1).trim();
+
+            if (private_message.isEmpty()) {
+                sendMessage("[SERVER] Message cannot be empty.");
+                return;
+            }
+
+            boolean is_message_sent = server.sendPrivateMessage(this, receiver_username, private_message);
+
+            if (!is_message_sent) {
+                sendMessage("[SERVER] User " + receiver_username + " is not online.");
+            }
+
+        }
+        catch (Exception exception) {
+            err_log.println("[ClientHandler] An error occurred while handling private message: " + exception.getMessage());
+        }
+    }
+
     public String getClientUsername() {
         return client_username;
     }
+
 
     @Override
     public void run() {
@@ -88,7 +121,10 @@ public class ClientHandler implements Runnable {
                     break;
                 }
 
-                if (!message.trim().isEmpty()) {
+                if (message.startsWith("/msg ")) {
+                    handlePrivateMessage(message);
+                }
+                else if (!message.trim().isEmpty()) {
                     server.broadcastMessage(client_username + ": " + message, this);
                 }
             }

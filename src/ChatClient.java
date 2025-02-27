@@ -26,7 +26,8 @@ public class ChatClient {
             output.flush();
 
             console.println("Connected to chat. Type messages below:");
-            console.println("Type /exit to disconnect \n");
+            console.println("Type /exit to disconnect");
+            console.println("Type /msg \"username\" <message> to send a private message");
 
             new Thread(this::listenForMessages).start(); // listen for messages in a separate thread
         }
