@@ -28,6 +28,7 @@ public class ChatClient {
             console.println("Connected to chat. Type messages below:");
             console.println("Type /exit to disconnect");
             console.println("Type /msg \"username\" <message> to send a private message");
+            console.println("Type /list to see all online users");
 
             new Thread(this::listenForMessages).start(); // listen for messages in a separate thread
         }

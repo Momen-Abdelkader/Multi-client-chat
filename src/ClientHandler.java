@@ -124,6 +124,9 @@ public class ClientHandler implements Runnable {
                 if (message.startsWith("/msg ")) {
                     handlePrivateMessage(message);
                 }
+                else if (message.trim().equalsIgnoreCase("/list")) {
+                    sendMessage("[SERVER] Online users: " + server.getOnlineUsers());
+                }
                 else if (!message.trim().isEmpty()) {
                     server.broadcastMessage(client_username + ": " + message, this);
                 }

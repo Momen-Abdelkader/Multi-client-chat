@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.StringJoiner;
 
 public class ChatServer {
 
@@ -79,6 +80,14 @@ public class ChatServer {
 
 
         return is_receiver_found;
+    }
+
+    public synchronized String getOnlineUsers() {
+        StringJoiner online_users = new StringJoiner(", ");
+        for (ClientHandler client : clients) {
+            online_users.add(client.getClientUsername());
+        }
+        return online_users.toString();
     }
 
     public synchronized void removeClient(ClientHandler client) {
