@@ -13,6 +13,7 @@ public class ClientHandler implements Runnable {
     private String client_username;
     private volatile boolean is_running = true;
     private final static PrintStream err_log = new PrintStream(System.err);
+    public volatile static int anonymous_id = 1;
 
     ClientHandler(Socket client, ChatServer server) {
         try {
@@ -21,6 +22,13 @@ public class ClientHandler implements Runnable {
             this.input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             this.output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
             client_username = input.readLine();
+
+            // validate name
+            if (client_username == null || client_username.trim().isEmpty()) {
+                client_username = "Anonymous - " + String.valueOf(anonymous_id);
+                anonymous_id++;
+            }
+
             server.broadcastMessage(client_username + " has joined the chat.", this);
         }
         catch (IOException exception) {
