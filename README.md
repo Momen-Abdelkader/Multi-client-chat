@@ -58,7 +58,7 @@ If you prefer to compile first:
    java ChatClient
    ```
 
-### Option 2: Using an IDE (Recommended for Development)
+### Option 2: Using an IDE
 
 1. Import the source files into your preferred IDE (Eclipse, IntelliJ IDEA, NetBeans)
 2. Run the `ChatServer` class to start the server
